@@ -3,6 +3,12 @@ __author__ = 'adrie_000'
 
 from serial import *
 
+LEFT = 0
+RIGHT = 1
+MOTOR = 0
+HOKUYO = 1
+codes = ['0', '1']
+
 
 class GeneralSerialCom():
     def __init__(self, port=None, specific_test_request=None, specific_test_answer=None):
@@ -21,14 +27,16 @@ class GeneralSerialCom():
     def read(self):
         return self.com.read()
 
-    def findPorts(self):
-        # TODO
-        return 0
 
-    def testPort(self, possible_ports, specific_test_request, specific_test_answer):
-        # TODO : ouvrir chaque connexion série possible, lui envoyer specific_test_request
-        #  verifier si elle renvoie specific_test_answer
-        return 0
+def find_ports():
+    # TODO
+    return 0
+
+
+def test_port(possible_ports, specific_test_request, specific_test_answer):
+    # TODO : ouvrir chaque connexion série possible, lui envoyer specific_test_request
+    #  verifier si elle renvoie specific_test_answer
+    return 0
 
 
 class ArduinoCom(GeneralSerialCom):
@@ -36,12 +44,24 @@ class ArduinoCom(GeneralSerialCom):
         GeneralSerialCom.__init__(self, port, specific_test_request, specific_test_answer)
 
     def request_mission_parameters(self):
-        # TODO : faire la requete auprès de l'arduino et renvoyer 'LEFT' ou 'RIGHT' selon le coté de départ donné par l'arduino
-        return 0
+        self.write('RSS')  # Request Start Side
+        if str(self.com.read(size=4)) == 'LEFT':
+            return LEFT
+        else:
+            return RIGHT
 
     def hear_start(self):
+        self.write('SL')  # Start Listening
+        while self.com.read(1) != 'S':
+            pass
+
+    def send_conf(self, code):
+        self.write(codes[code])
+
+    def send_orders(self, orders):
         # TODO
-        return 0
+        # Transforme orders et l'envoie
+        pass
 
 
 class HokuyoCom(GeneralSerialCom):
