@@ -21,7 +21,7 @@ class Robot():
             self.objectives = parse('left.txt')
         else:
             self.objectives = parse('right.txt')
-        self.obstacles = []
+        self.opponents = []
         self.ally = []
         self.pathfinder = Pathfinder(self) # Gère le pathfinding local
         self.status = StatusHandler(self)  # Permet d'avoir les infos sur l'état actuel du robot
@@ -37,13 +37,13 @@ class Robot():
         self.hokuyo_handler.start()  # démarre la détection
         self.started = True
         while self.started:
-            # TODO :
             # mets à jour l'état du robot
             self.status.update()
             if self.current_objective is None:
                 self.objective_handler.set_objective()
                 if self.current_objective is None:
-                    quit('Mission finished')
+                    self.started = False
+                    break
             else:
                 doable_objective = self.objective_handler.update_objective()
                 # agir si possible
@@ -56,11 +56,12 @@ class Robot():
                     orders = self.pathfinder.get_orders(self.current_objective.position)
                         # Envoi des ordres de direction-vitesse-rotation à la motor_arduino dans le repère
                     self.motor_arduino.send_orders(orders)
-            #
-            pass
+        print 'Mission over'
 
     def get_position(self):
         return self.status.get_position()
+        # Renvoie [x,y,theta] dans le référentiel arène
 
     def get_state(self):
         return self.status.get_state()
+        # Renvoie [x,y,theta,

@@ -8,6 +8,7 @@ class Pathfinder():
         pass
 
     def get_orders(self, objective_location):
+        # Renvoie les ordres en [direction, vitesse, sens_rotation, vitesse_rotation]
         if objective_location is None:
             pass
         else:

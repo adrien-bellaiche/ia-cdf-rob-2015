@@ -9,4 +9,5 @@ class StrategicMind():
 
     def update_objective(self):
         # TODO : voit si un objectif est remplissable à courte portée (le renvoie si oui)
+        # Mets à jour current_objective aussi.
         pass
