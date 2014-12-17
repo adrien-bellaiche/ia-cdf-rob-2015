@@ -4,6 +4,9 @@ __author__ = 'adrie_000'
 from serial import *
 from math import pi
 from time import sleep
+from threading import Thread
+import sys
+import glob
 
 LEFT = 0
 RIGHT = 1
@@ -15,12 +18,12 @@ codes = ['0', '1']
 class GeneralSerialCom():
     def __init__(self, port=None, specific_test_request=None, specific_test_answer=None):
         if port is None:
-            possible_ports = self.findPorts()
-            validPort = self.testPort(possible_ports, specific_test_request, specific_test_answer)
-            if validPort is None:
+            possible_ports = find_ports()
+            valid_port = test_port(possible_ports, specific_test_request, specific_test_answer)
+            if valid_port is None:
                 quit('Error : no serial port openable for request ' + specific_test_request
                      + ' and answer ' + specific_test_answer)
-            self.port = validPort
+            self.port = valid_port
         self.com = Serial(self.port)
 
     def write(self, message):
@@ -31,12 +34,6 @@ class GeneralSerialCom():
 
 
 def find_ports():
-    import sys
-import glob
-import serial
-
-
-def serial_ports():
     """Lists serial ports
     :raises EnvironmentError:
         On unsupported or unknown platforms
@@ -55,10 +52,10 @@ def serial_ports():
     result = []
     for portID in ports:
         try:
-            s = serial.Serial(portID)
+            s = Serial(portID)
             s.close()
             result.append(portID)
-        except (OSError, serial.SerialException):
+        except (OSError, SerialException):
             pass
     return result
 
@@ -69,9 +66,13 @@ def test_port(possible_ports, specific_test_request, specific_test_answer):
     return 0
 
 
-class ArduinoCom(GeneralSerialCom):
-    def __init__(self, port=None, specific_test_request=None, specific_test_answer=None):
+class ArduinoCom(GeneralSerialCom, Thread):
+    def __init__(self, data_center, port=None, specific_test_request=None, specific_test_answer=None):
         GeneralSerialCom.__init__(self, port, specific_test_request, specific_test_answer)
+        Thread.__init__(self)
+        self.started = False
+        self.data_center = data_center
+        self.order_list = []
 
     def request_mission_parameters(self):
         self.write('RSS')  # Request Start Side
@@ -80,18 +81,31 @@ class ArduinoCom(GeneralSerialCom):
         else:
             return RIGHT
 
-    def hear_start(self):
-        self.write('SL')  # Start Listening
-        while self.com.read(1) != 'S':
-            pass
+    def run(self):
+        while self.started:
+            if len(self.order_list) > 0:
+                self.com.write(self.order_list.pop(0))
+            n = self.com.inWaiting()
+            if n > 0:
+                self.parse_receiver(self.com.read(n))
+
+    def send(self, order):
+        self.order_list.append(order)
 
     def send_conf(self, code):
-        self.write(codes[code])
+        self.send(codes[code])
 
     def send_orders(self, orders):
         # TODO
         # Transforme orders et les envoie
         pass
+
+    def parse_receiver(self, data):
+        for letter in data:
+            if data == 'W':
+                self.data_center.started = True
+            elif data == 'Q':
+                self.data_center.started = False
 
 
 class HokuyoCom(GeneralSerialCom):

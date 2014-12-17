@@ -12,6 +12,7 @@ from Utils import parse
 class Robot():
     def __init__(self):
         self.ardu_com = ArduinoCom(specific_test_request='V', specific_test_answer='mainduino')
+        self.ardu_com.start()
         self.motor_arduino = ArduinoCom(specific_test_request='V', specific_test_answer='motorduino')
         self.ardu_com.send_conf(MOTOR)
         self.hokuyo_com = HokuyoCom()
@@ -31,9 +32,7 @@ class Robot():
         self.started = False
 
     def start(self):
-        self.ardu_com.hear_start()  # doit être blocante jusqu'à ce que la tirette soit ... bah tirée.
         # caractérisé par la réception d'un message de l'arduino
-
         self.hokuyo_handler.start()  # démarre la détection
         self.started = True
         while self.started:

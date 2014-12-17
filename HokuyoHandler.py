@@ -24,15 +24,16 @@ class HokuyoHandler(Thread):
             # - lit l'hokuyo
             self.data = self.hokuyo.get_fresh_data()
             # - Récupère la liste des nouvelles positions d'obstacles
-            positions = self.find_positions_in_data(data)
+            positions = self.find_positions_in_data()
             # - Relie les positions avec les anciennes & stocke tout dans le data_center.
             self.match_positions(positions)
             # - Envoie les nouvelles positions via l'arduino_com du data_center au robot secondaire
             self.send_data_to_ally()
 
-    def find_positions_in_data(self, data):
+    def find_positions_in_data(self):
         # TODO : nettoie les données capteur, renvoie la liste des positions
-        pass
+        p = self.data
+        return 0
 
     def match_positions(self, new_positions):
         # TODO : detecte l'allié via son ancienne position, les autres positions sont foes
