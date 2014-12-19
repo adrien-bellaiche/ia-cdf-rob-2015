@@ -1,7 +1,11 @@
 (Adrien) code arduino pour commande bas niveau
+
 Communication wifi
+
 Deplacement:
     modelisation cinématique robot
     pathfinding (potentiels multidimensionels).
+
 Remplir les fonctions déjà marquées
+
 Rajouter les fonctions nécessaires
