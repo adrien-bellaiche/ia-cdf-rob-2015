@@ -17,6 +17,7 @@ codes = ['0', '1']
 
 class GeneralSerialCom():
     def __init__(self, port=None, specific_test_request=None, specific_test_answer=None):
+        self.port = port
         if port is None:
             possible_ports = find_ports()
             valid_port = test_port(possible_ports, specific_test_request, specific_test_answer)
@@ -119,12 +120,12 @@ class HokuyoCom(GeneralSerialCom):
         # Returns [arraylist of millimeters,arraylist of corresponding rads]
         self.write('M')
         self.write('S')
-        s = [bytes(0x30+start/1000), bytes(0x30+(start/100) % 10), bytes(0x30+(start/10) % 10), bytes(0x30+start % 10)]
-        e = [bytes(0x30+(end/1000)), bytes(0x30+(end/100) % 10), bytes(0x30+(end/10) % 10), bytes(0x30+end % 10)]
+        s = [chr(0x30+start/1000), chr(0x30+(start/100) % 10), chr(0x30+(start/10) % 10), chr(0x30+start % 10)]
+        e = [chr(0x30+(end/1000)), chr(0x30+(end/100) % 10), chr(0x30+(end/10) % 10), chr(0x30+end % 10)]
         cluster = 1
-        cc = [bytes(0x30 + ((cluster / 10) % 10)), bytes(0x30 + (cluster % 10))]
-        si = 0x30
-        sn = [0x30, 0x31]
+        cc = [chr(0x30 + ((cluster / 10) % 10)), chr(0x30 + (cluster % 10))]
+        si = chr(0x30)
+        sn = [chr(0x30), chr(0x31)]
         self.write(s)
         self.write(e)
         self.write(cc)
@@ -150,14 +151,15 @@ class HokuyoCom(GeneralSerialCom):
                     print 'MS SPOTTED : some nexts avoided'
                     for k in range(47):
                         self.com.read()
+                        ret.append(0)
                     print 'End of avoidance'
                 elif c1 != '?' and c2 != LF:
                     mes_count += 1
-                    data = ((c1-0x30) << 6) | (c2 - 0x30)
+                    data = ((ord(c1) - 0x30) << 6) | (ord(c2) - 0x30)
                     print 'Mesure', mes_count, 'is', data
                     ret.append(data)
                 else:
-                    print 'End of block detected at :',count,'bytes'
+                    print 'End of block detected at :', count, 'bytes'
                     count = 0
                     possible_end = True
             else:
