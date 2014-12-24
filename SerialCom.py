@@ -2,7 +2,7 @@
 __author__ = 'adrie_000'
 
 from serial import *
-from math import pi
+from math import pi, cos, sin
 from time import sleep
 from threading import Thread
 import sys
@@ -103,18 +103,20 @@ class ArduinoCom(GeneralSerialCom, Thread):
 
     def parse_receiver(self, data):
         for letter in data:
-            if data == 'W':
+            if letter == 'W':
                 self.data_center.started = True
-            elif data == 'Q':
+            elif letter == 'Q':
                 self.data_center.started = False
 
 
 class HokuyoCom(GeneralSerialCom):
+
+    undesirables_limits = [20, 4100]
+
     def __init__(self, port=None, specific_test_request=None, specific_test_answer=None):
         GeneralSerialCom.__init__(self, port, specific_test_request, specific_test_answer)
 
     def get_fresh_data(self):
-        # TODO : test
         start = 44
         end = 725
         # Returns [arraylist of millimeters,arraylist of corresponding rads]
@@ -132,10 +134,6 @@ class HokuyoCom(GeneralSerialCom):
         self.write(si)
         self.write(sn)
         self.write(LF)
-        doub = []
-        for k in range(start, end):
-            doub.append(((k-44)*4*pi/(3*681)-2*pi/3))
-             # 681 : max size of mesure on correct stuff
         sleep(0.250)
         ret = []
         mes_count = 0
@@ -148,20 +146,38 @@ class HokuyoCom(GeneralSerialCom):
                 c2 = self.com.read()
                 count += 1
                 if c1 == 'M' and c2 == 'S':
-                    print 'MS SPOTTED : some nexts avoided'
+                    # print 'MS SPOTTED : some nexts avoided'
                     for k in range(47):
                         self.com.read()
-                        ret.append(0)
-                    print 'End of avoidance'
+                    # print 'End of avoidance'
                 elif c1 != '?' and c2 != LF:
                     mes_count += 1
                     data = ((ord(c1) - 0x30) << 6) | (ord(c2) - 0x30)
-                    print 'Mesure', mes_count, 'is', data
+                    # print 'Mesure', mes_count, 'is', data
                     ret.append(data)
                 else:
-                    print 'End of block detected at :', count, 'bytes'
+                    # print 'End of block detected at :', count, 'bytes'
                     count = 0
                     possible_end = True
             else:
                 possible_end = False
+        n = len(ret)
+        doub = [-k*4*pi/3/n + 2*pi/3 for k in range(n)]
         return [ret, doub]
+
+    def clear_data(self, ret, doub):
+        range_cleaned = []
+        angle_cleaned = []
+        for k in range(len(ret)):
+            if ret[k] < HokuyoCom.undesirables_limits[0] or ret[k]>HokuyoCom.undesirables_limits[1]:
+                range_cleaned.append(ret[k])
+                angle_cleaned.append(doub[k])
+        return [range_cleaned, angle_cleaned]
+
+    def polar2cartesian(self, ranging, angle):
+        x = []
+        y = []
+        for k in range(len(ranging)):
+            x.append(ranging[k]*cos(angle[k]))
+            y.append(ranging[k]*sin(angle[k]))
+        return [x,y]

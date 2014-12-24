@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 __author__ = 'adrie_000'
 
-from SerialCom import ArduinoCom, HokuyoCom, LEFT, RIGHT, MOTOR, HOKUYO
+from SerialCom import ArduinoCom, HokuyoCom, LEFT, MOTOR, HOKUYO
 from HokuyoHandler import HokuyoHandler
 from Strategy import StrategicMind
 from Pathfinding import Pathfinder
@@ -11,9 +11,9 @@ from Utils import parse
 
 class Robot():
     def __init__(self):
-        self.ardu_com = ArduinoCom(specific_test_request='V', specific_test_answer='mainduino')
+        self.ardu_com = ArduinoCom(self, specific_test_request='V', specific_test_answer='mainduino')
         self.ardu_com.start()
-        self.motor_arduino = ArduinoCom(specific_test_request='V', specific_test_answer='motorduino')
+        self.motor_arduino = ArduinoCom(self, specific_test_request='V', specific_test_answer='motorduino')
         self.ardu_com.send_conf(MOTOR)
         self.hokuyo_com = HokuyoCom()
         self.ardu_com.send_conf(HOKUYO)
@@ -22,9 +22,9 @@ class Robot():
             self.objectives = parse('left.txt')
         else:
             self.objectives = parse('right.txt')
-        self.opponents = []
-        self.ally = []
-        self.pathfinder = Pathfinder(self) # Gère le pathfinding local
+        self.obstacles = []
+        self.nObstacles = 0
+        self.pathfinder = Pathfinder(self)  # Gère le pathfinding local
         self.status = StatusHandler(self)  # Permet d'avoir les infos sur l'état actuel du robot
         self.hokuyo_handler = HokuyoHandler(self.hokuyo_com, self)  # Gère l'hokuyo et traite ses données
         self.objective_handler = StrategicMind(self.objectives, self)
