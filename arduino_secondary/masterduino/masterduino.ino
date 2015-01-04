@@ -18,7 +18,7 @@ double angleOrder = 0;
 void setup() {
     getConfig();
     Wire.begin();
-    attachInterrupt(0, alertProxy, HIGH); //TODO
+    attachInterrupt(0, alertProxy, SWITCH); //TODO
 }
 
 void loop() {
@@ -55,4 +55,9 @@ void defineOrders() {
 
 void sendStopMotor() {
 
+}
+
+void alertProxy() {
+    // TODO : si la pin d'interrupt est HIGH alerte proxy (stop moteurs etc)
+    // Si LOW, reprendre le cours des activités
 }
