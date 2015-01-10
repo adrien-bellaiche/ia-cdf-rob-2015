@@ -2,7 +2,9 @@ __author__ = 'adrie_000'
 
 import numpy as np
 import numpy.matrixlib as nm
-'test'
+
+'''test'''
+
 p = nm.matrix([[3, 3, 3], [3, 5, 7]])
 q = p - p.mean(1)
 print q
