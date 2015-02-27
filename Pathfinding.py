@@ -1,6 +1,5 @@
 __author__ = 'adrie_000'
 
-
 class Pathfinder():
     def __init__(self, data_center):
         self.data_center = data_center
