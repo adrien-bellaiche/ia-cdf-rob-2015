@@ -1,66 +1,63 @@
 # -*- coding: utf8 -*-
 __author__ = 'adrie_000'
 
-from SerialCom import ArduinoCom, HokuyoCom, LEFT, MOTOR, HOKUYO
+from SerialCom import HokuyoCom
 from HokuyoHandler import HokuyoHandler
-from Strategy import StrategicMind
 from Pathfinding import Pathfinder
-from State import StatusHandler
-from Utils import parse
 
+sideDict = {0: "left.txt",
+            1: "right.txt"}
+
+startDict = {0: [0, 0, 0],
+             1: [0, 0, 0]}
 
 class Robot():
     def __init__(self):
-        self.ardu_com = ArduinoCom(self, specific_test_request='V', specific_test_answer='mainduino')
-        self.ardu_com.start()
-        self.motor_arduino = ArduinoCom(self, specific_test_request='V', specific_test_answer='motorduino')
-        self.ardu_com.send_conf(MOTOR)
+        # TODO : add thread for localisation
+        # TODO : add motor command
+        #TODO : add visual indicators for confirmation
+        #self.objectives = None #Useless for now. Might be useful later
         self.hokuyo_com = HokuyoCom()
-        self.ardu_com.send_conf(HOKUYO)
         self.current_objective = None
-        if self.ardu_com.request_mission_parameters() == LEFT:
-            self.objectives = parse('left.txt')
-        else:
-            self.objectives = parse('right.txt')
         self.obstacles = []
-        self.nObstacles = 0
+        self.position = startDict[self.startSide()]
         self.pathfinder = Pathfinder(self)  # Gère le pathfinding local
-        self.status = StatusHandler(self)  # Permet d'avoir les infos sur l'état actuel du robot
         self.hokuyo_handler = HokuyoHandler(self.hokuyo_com, self)  # Gère l'hokuyo et traite ses données
-        self.objective_handler = StrategicMind(self.objectives, self)
-            # Gère la stratégie pure (décision d'objectif, la gestion du temps est un objectif)
+        self.parse(sideDict[self.startSide()])
         self.started = False
+        self.orders = [0, 0]
+        self.pwms = [127, 127, 127, 127]  # Left front, left rear, right front, right rear
 
     def start(self):
         # caractérisé par la réception d'un message de l'arduino
         self.hokuyo_handler.start()  # démarre la détection
         self.started = True
         while self.started:
-            # mets à jour l'état du robot
-            self.status.update()
-            if self.current_objective is None:
-                self.objective_handler.set_objective()
-                if self.current_objective is None:
-                    self.started = False
-                    break
-            else:
-                doable_objective = self.objective_handler.update_objective()
-                # agir si possible
-                if doable_objective is not None:
-                    doable_objective.act(self)
-                # Sinon se positionner pour atteindre un objectif
-                else:
-                    # rejoindre la position de current_objective sinon
-                        # Pathfinding local
-                    orders = self.pathfinder.get_orders(self.current_objective.position)
-                        # Envoi des ordres de direction-vitesse-rotation à la motor_arduino dans le repère
-                    self.motor_arduino.send_orders(orders)
+            # Pathfinding local
+            self.orders = self.pathfinder.get_orders(self.current_objective.position)
+            # Envoi des ordres de direction-vitesse-rotation à la motor_arduino dans le repère
         print 'Mission over'
 
-    def get_position(self):
-        return self.status.get_position()
-        # Renvoie [x,y,theta] dans le référentiel arène
+    def startSide(self):
+        # TODO
+        pass
 
-    def get_state(self):
-        return self.status.get_state()
-        # Renvoie [x,y,theta,
+    def startOdometryServer(self):
+        # TODO
+        pass
+
+    def OdometryRoutin(self):
+        # TODO :
+        # read the odometry pseudo-files
+        # deduces the current speed for each wheel
+        # PID to match the order
+        pass
+
+    def orders2motors(self, orders):
+        # TODO : invert state equations here
+
+        pass
+
+    def parse(self, textfilename):
+        # TODO : lit le fichier d'objectifs, prépare les données
+        pass
