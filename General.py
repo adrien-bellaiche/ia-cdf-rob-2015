@@ -5,27 +5,23 @@ from SerialCom import ArduinoCom, HokuyoCom, LEFT, MOTOR, HOKUYO
 from HokuyoHandler import HokuyoHandler
 from Strategy import StrategicMind
 from Pathfinding import Pathfinder
-from State import StatusHandler
-from Utils import parse
-
+from Utils import objectives
 
 class Robot():
     def __init__(self):
-        self.ardu_com = ArduinoCom(self, specific_test_request='V', specific_test_answer='mainduino')
+        self.ardu_com = ArduinoCom(self, specific_test_request='V', specific_test_answer='arduino')
         self.ardu_com.start()
-        self.motor_arduino = ArduinoCom(self, specific_test_request='V', specific_test_answer='motorduino')
         self.ardu_com.send_conf(MOTOR)
         self.hokuyo_com = HokuyoCom()
         self.ardu_com.send_conf(HOKUYO)
         self.current_objective = None
         if self.ardu_com.request_mission_parameters() == LEFT:
-            self.objectives = parse('left.txt')
+            self.objectives = objectives("left")
         else:
-            self.objectives = parse('right.txt')
+            self.objectives = objectives("right")
         self.obstacles = []
         self.nObstacles = 0
         self.pathfinder = Pathfinder(self)  # Gère le pathfinding local
-        self.status = StatusHandler(self)  # Permet d'avoir les infos sur l'état actuel du robot
         self.hokuyo_handler = HokuyoHandler(self.hokuyo_com, self)  # Gère l'hokuyo et traite ses données
         self.objective_handler = StrategicMind(self.objectives, self)
             # Gère la stratégie pure (décision d'objectif, la gestion du temps est un objectif)
@@ -36,8 +32,7 @@ class Robot():
         self.hokuyo_handler.start()  # démarre la détection
         self.started = True
         while self.started:
-            # mets à jour l'état du robot
-            self.status.update()
+            # Gestion des objectifs
             if self.current_objective is None:
                 self.objective_handler.set_objective()
                 if self.current_objective is None:
@@ -54,13 +49,10 @@ class Robot():
                         # Pathfinding local
                     orders = self.pathfinder.get_orders(self.current_objective.position)
                         # Envoi des ordres de direction-vitesse-rotation à la motor_arduino dans le repère
-                    self.motor_arduino.send_orders(orders)
+                    self.ardu_com.send_orders(orders)
         print 'Mission over'
 
     def get_position(self):
-        return self.status.get_position()
+        # TODO
+        return 0
         # Renvoie [x,y,theta] dans le référentiel arène
-
-    def get_state(self):
-        return self.status.get_state()
-        # Renvoie [x,y,theta,

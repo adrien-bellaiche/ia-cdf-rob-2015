@@ -2,6 +2,7 @@
 __author__ = 'adrie_000'
 
 from threading import Thread
+
 import numpy as np
 import numpy.matrixlib as nm
 
@@ -33,7 +34,6 @@ class HokuyoHandler(Thread):
             self.find_positions_in_data()
             # - Relie les positions avec les anciennes & stocke tout dans le data_center.
             # - Envoie les nouvelles positions via l'arduino_com du data_center au robot secondaire
-            self.send_data_to_ally()
 
     def find_positions_in_data(self):
         # TODO : tests
@@ -58,10 +58,6 @@ class HokuyoHandler(Thread):
         for obstacle in obstacles:
             obstacle.reduce()
         self.data_center.obstacles = obstacles
-
-    def send_data_to_ally(self):
-        # TODO
-        pass
 
 
 class Obstacle():

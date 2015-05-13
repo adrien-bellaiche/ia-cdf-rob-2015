@@ -2,15 +2,34 @@
 __author__ = 'adrie_000'
 
 
-def parse(textfilename):
-        #TODO : lit le fichier d'objectifs, renvoie la liste d'objectifs
-        return 0
-
-
-class Objective():  # TODO
-    def __init__(self, position=None, action=None):
-        self.position = position
+class Plot():
+    def __init__(self, position=None, atelier=None):
         pass
 
     def act(self):
+        pass
+
+
+class Clap():
+    def __init__(self, position=None, atelier=None):
+        pass
+
+    def act(self):
+        pass
+
+
+class Distributeur():
+    def __init__(self, position=None, atelier=None):
+        pass
+
+    def act(self):
+        pass
+
+
+def objectives(side):
+    if side == "left":
+        pass
+        # TODO
+    else:
+        # TODO
         pass
