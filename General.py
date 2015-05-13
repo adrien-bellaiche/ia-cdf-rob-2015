@@ -7,13 +7,16 @@ from Strategy import StrategicMind
 from Pathfinding import Pathfinder
 from Utils import objectives
 
+
 class Robot():
     def __init__(self):
         self.ardu_com = ArduinoCom(self, specific_test_request='V', specific_test_answer='arduino')
         self.ardu_com.start()
+        self.position = [0, 0]
         self.ardu_com.send_conf(MOTOR)
         self.hokuyo_com = HokuyoCom()
         self.ardu_com.send_conf(HOKUYO)
+        self.orientation = 0
         self.current_objective = None
         if self.ardu_com.request_mission_parameters() == LEFT:
             self.objectives = objectives("left")
@@ -26,6 +29,12 @@ class Robot():
         self.objective_handler = StrategicMind(self.objectives, self)
             # Gère la stratégie pure (décision d'objectif, la gestion du temps est un objectif)
         self.started = False
+
+    def recompute_orientation(self):
+        # TODO
+        pass
+
+
 
     def start(self):
         # caractérisé par la réception d'un message de l'arduino

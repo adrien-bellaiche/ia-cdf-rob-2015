@@ -26,6 +26,7 @@ class HokuyoHandler(Thread):
     def run(self):
         self.started = True
         while self.started:
+            self.data_center.recompute_orientation()
             # - lit l'hokuyo
             self.data = self.hokuyo.get_fresh_data()
             self.data = self.hokuyo.clear_data(self.data[0], self.data[1])
@@ -33,7 +34,7 @@ class HokuyoHandler(Thread):
             # - Récupère la liste des nouvelles positions d'obstacles
             self.find_positions_in_data()
             # - Relie les positions avec les anciennes & stocke tout dans le data_center.
-            # - Envoie les nouvelles positions via l'arduino_com du data_center au robot secondaire
+            self.relocalize()
 
     def find_positions_in_data(self):
         # TODO : tests
@@ -59,6 +60,11 @@ class HokuyoHandler(Thread):
             obstacle.reduce()
         self.data_center.obstacles = obstacles
 
+    def relocalize(self):
+        orientation = self.data_center.orientation
+
+        pass
+
 
 class Obstacle():
     TYPE_LINE = 0
@@ -76,7 +82,7 @@ class Obstacle():
     def reduce(self):
         # TODO : tests
         # En gros, calcul du barycentre, et définition du type en fonction du rapport (distmin/distmax)
-        # distX = distX au] barycentre
+        # distX = distX au barycentre
         self.pointList = nm.matrix([[self.pointList[k][0] for k in range(len(self.pointList))],
                                    [self.pointList[k][1] for k in range(len(self.pointList))]])
         self.center = self.pointList.mean(1)
