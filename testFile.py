@@ -1,6 +1,19 @@
 __author__ = 'adrie_000'
 
-import numpy as np
+from time import sleep
 
-w = np.sqrt(np.sum(np.power([3, 4], [2, 2])))
-print w
+import serial as ser
+
+
+out = ser.Serial(port='COM4', baudrate=115200)
+print 'Serial port opened'
+sleep(1)
+out.write('#19 P700 \n')
+out.flush()
+print 'command sent'
+sleep(5)
+out.write('#19 P2300 \n')
+print 'second command sent'
+sleep(5)
+print 'closing serial link'
+out.close()
