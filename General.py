@@ -6,6 +6,7 @@ from HokuyoHandler import HokuyoHandler
 from Strategy import StrategicMind
 from Pathfinding import Pathfinder
 from Utils import objectives
+import time
 
 
 class Robot():
@@ -40,7 +41,8 @@ class Robot():
         # caractérisé par la réception d'un message de l'arduino
         self.hokuyo_handler.start()  # démarre la détection
         self.started = True
-        while self.started:
+        timeInit=time.time()
+        while self.started and time.time() < timeInit+90:
             # Gestion des objectifs
             if self.current_objective is None:
                 self.objective_handler.set_objective()
