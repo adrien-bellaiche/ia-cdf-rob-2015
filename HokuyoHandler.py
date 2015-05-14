@@ -62,7 +62,7 @@ class HokuyoHandler(Thread):
 
     def relocalize(self):
         orientation = self.data_center.orientation
-
+        # TODO
         pass
 
 
@@ -84,7 +84,7 @@ class Obstacle():
         # En gros, calcul du barycentre, et définition du type en fonction du rapport (distmin/distmax)
         # distX = distX au barycentre
         self.pointList = nm.matrix([[self.pointList[k][0] for k in range(len(self.pointList))],
-                                   [self.pointList[k][1] for k in range(len(self.pointList))]])
+                                    [self.pointList[k][1] for k in range(len(self.pointList))]])
         self.center = self.pointList.mean(1)
         dp = (self.pointList - self.center).getA()  # matrice des vecteurs (colonne) ecart au barycentre
         r = [np.array([dp[0][k], dp[1][k]]) for k in range(dp.shape[1])]  # liste des vecteurs ecart

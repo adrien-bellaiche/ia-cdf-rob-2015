@@ -2,8 +2,11 @@
 __author__ = 'adrie_000'
 
 
+# Side : coté par lequel approcher l'item. en degrés
+#prof : profondeur à rentrer dans l'axe side.
+
 class Plot():
-    def __init__(self, position=None, atelier=None):
+    def __init__(self, position=None, atelier=0, side=None, prof=70, maxscore=3):
         pass
 
     def act(self):
@@ -11,7 +14,7 @@ class Plot():
 
 
 class Clap():
-    def __init__(self, position=None, atelier=None):
+    def __init__(self, position=None, atelier=1, side=90, prof=0, maxscore=3):
         pass
 
     def act(self):
@@ -19,7 +22,7 @@ class Clap():
 
 
 class Distributeur():
-    def __init__(self, position=None, atelier=None):
+    def __init__(self, position=None, atelier=1, side=-90, prof=5, maxscore=3):
         pass
 
     def act(self):

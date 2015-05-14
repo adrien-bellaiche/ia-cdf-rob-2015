@@ -1,6 +1,7 @@
 __author__ = 'adrie_000'
 
+import numpy as np
+
 # test
-res = []
-res.append(3)
-print res
+res = 90
+print np.rad2deg(res) / 3.1415

@@ -1,26 +1,36 @@
 __author__ = 'adrie_000'
-
+# -*- coding: utf8 -*-
 
 class StrategicMind():
     # TODO
 
     def __init__(self, data_center):
         self.data_center = data_center
-        self.i = 0
 
     def set_objective(self):
-        self.data_center.current_objective = self.data_center.current_objectives[self.i]
-        self.i += 1
+        best_obj = None
+        best_score = 0
+        for objective in self.data_center.objectives:
+            score = self.compute_score(objective)
+            if best_obj is None:
+                best_obj = objective
+                best_score = score
+            else:
+                if best_score < score:
+                    best_score = score
+                    best_obj = objective
+        return best_obj
+
+
+    def compute_score(self, objective):
+        # TODO
+        return 0
 
     def update_objective(self):
         # TODO : voit si un objectif est remplissable a courte portee (le renvoie si oui)
-
-        # Mets a jour current_objective aussi.
-
-        #récupère sa position
+        # recupere sa position
         [x, y] = self.data_center.position
-
-        #récupère la position de l'objectif
+        # recupere la position de l'objectif
         [Ox, Oy] = self.data_center.current_objective.position
 
         #compare les distances
