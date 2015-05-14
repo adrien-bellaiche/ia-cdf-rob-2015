@@ -1,9 +1,10 @@
 __author__ = 'adrie_000'
 # -*- coding: utf8 -*-
 
-class StrategicMind():
-    # TODO
+import numpy as np
 
+
+class StrategicMind():
     def __init__(self, data_center):
         self.data_center = data_center
 
@@ -21,23 +22,13 @@ class StrategicMind():
                     best_obj = objective
         return best_obj
 
-
     def compute_score(self, objective):
-        # TODO
-        return 0
+        distance = np.linalg.norm(np.array(objective.position) - np.array(self.data_center.position))
+        return objective.max_score - distance
 
     def update_objective(self):
-        # TODO : voit si un objectif est remplissable a courte portee (le renvoie si oui)
-        # recupere sa position
-        [x, y] = self.data_center.position
-        # recupere la position de l'objectif
-        [Ox, Oy] = self.data_center.current_objective.position
-
-        #compare les distances
-        dist=((Ox-x)**2+(Oy-y)**2)**0.5
-        if dist < 1950:
-            doable_objective = self.data_center.current_objective
-        else:
-            doable_objective = None
-
-        return doable_objective
+        for objective in self.data_center.objectives:
+            if not objective.completed:
+                if objective.is_startable_from_here():
+                    return objective
+        return None
