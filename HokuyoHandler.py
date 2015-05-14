@@ -80,7 +80,6 @@ class Obstacle():
         self.pointList.append(item)
 
     def reduce(self):
-        # TODO : tests
         # En gros, calcul du barycentre, et définition du type en fonction du rapport (distmin/distmax)
         # distX = distX au barycentre
         self.pointList = nm.matrix([[self.pointList[k][0] for k in range(len(self.pointList))],

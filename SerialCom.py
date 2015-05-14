@@ -4,7 +4,6 @@ __author__ = 'adrie_000'
 from math import pi, cos, sin
 from time import sleep
 from threading import Thread
-import sys
 import glob
 
 from serial import *

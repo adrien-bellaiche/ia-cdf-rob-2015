@@ -29,8 +29,8 @@ class Plot():
             side_bool = abs(self.data_center.orientation - self.atelier * 2 * np.pi / 3 - self.side) < ori_tolerance
             entry = np.array(self.position) + np.array(
                 [np.cos(self.side * np.pi / 180), np.sin(self.side * np.pi / 180)]) * self.data_center.radius
-        return side_bool and np.linalg.norm(np.array(self.data_center.position) - np.array(entry)) < (
-                                                                                                         1 + pos_tolerance) * self.prof
+        return side_bool and np.linalg.norm(np.array(self.data_center.position) - entry) < (
+                                                                                           1 + pos_tolerance) * self.prof
 
 
     def act(self):
@@ -57,8 +57,8 @@ class Clap():
             side_bool = abs(self.data_center.orientation - self.atelier * 2 * np.pi / 3 - self.side) < ori_tolerance
             entry = np.array(self.position) + np.array(
                 [np.cos(self.side * np.pi / 180), np.sin(self.side * np.pi / 180)]) * self.data_center.radius
-        return side_bool and np.linalg.norm(np.array(self.data_center.position) - np.array(entry)) < (
-                                                                                                         1 + pos_tolerance) * self.prof
+        return side_bool and np.linalg.norm(np.array(self.data_center.position) - entry) < (
+                                                                                           1 + pos_tolerance) * self.prof
 
 
     def act(self):
@@ -84,8 +84,8 @@ class Distributeur():
             side_bool = abs(self.data_center.orientation - self.atelier * 2 * np.pi / 3 - self.side) < ori_tolerance
             entry = np.array(self.position) + np.array(
                 [np.cos(self.side * np.pi / 180), np.sin(self.side * np.pi / 180)]) * self.data_center.radius
-        return side_bool and np.linalg.norm(np.array(self.data_center.position) - np.array(entry)) < (
-                                                                                                         1 + pos_tolerance) * self.prof
+        return side_bool and np.linalg.norm(np.array(self.data_center.position) - entry) < (
+                                                                                           1 + pos_tolerance) * self.prof
 
 
     def act(self):

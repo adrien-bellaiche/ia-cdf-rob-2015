@@ -30,12 +30,12 @@ class Robot():
         self.nObstacles = 0
         self.pathfinder = Pathfinder(self)  # Gère le pathfinding local
         self.hokuyo_handler = HokuyoHandler(self.hokuyo_com, self)  # Gère l'hokuyo et traite ses données
-        self.objective_handler = StrategicMind(self.objectives, self)
+        self.objective_handler = StrategicMind(self)
         # Gère la stratégie pure (décision d'objectif, la gestion du temps est un objectif)
         self.started = False
 
     def init_orientation(self):
-        init_orientation = self.ardu_com.request_orientation()
+        self.ori_init = self.ardu_com.request_orientation()
 
     def recompute_orientation(self):
         # TODO

@@ -8,13 +8,12 @@ class Pathfinder():
         self.data_center = data_center
 
     def get_orders(self, objective):
-        # TODO : test
         # Renvoie les ordres en [direction, vitesse, vitesse_rotation]
         objective_location = objective.position
         v = np.array([0, 0])
         if objective_location is not None:
             obstacles = self.data_center.obstacles
-            #On cible l'approche par l'angle en question
+            # On cible l'approche par l'angle en question
             targ = np.array(objective_location) + np.array(
                 [np.cos(objective.side * np.pi / 180), np.sin(objective.side * np.pi / 180)]) * self.data_center.radius
             loc = np.array(self.data_center.position)
