@@ -35,8 +35,7 @@ class Robot():
         self.started = False
 
     def init_orientation(self):
-        # TODO : prendre la boussole et noter ce départ comme étant l'orientation de départ
-        pass
+        init_orientation = self.ardu_com.request_orientation()
 
     def recompute_orientation(self):
         # TODO

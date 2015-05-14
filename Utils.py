@@ -9,6 +9,7 @@ import numpy as np
 pos_tolerance = 0.1  # Tolérance à l'erreur de position
 ori_tolerance = np.pi / 10  # Tolérance à l'erreur de rotation
 
+
 class Plot():
     def __init__(self, data_center, position=None, atelier=0, side=None, prof=70, max_score=3):
         self.completed = False
@@ -29,7 +30,7 @@ class Plot():
             entry = np.array(self.position) + np.array(
                 [np.cos(self.side * np.pi / 180), np.sin(self.side * np.pi / 180)]) * self.data_center.radius
         return side_bool and np.linalg.norm(np.array(self.data_center.position) - np.array(entry)) < (
-                                                                                                     1 + pos_tolerance) * self.prof
+                                                                                                         1 + pos_tolerance) * self.prof
 
 
     def act(self):
@@ -57,7 +58,7 @@ class Clap():
             entry = np.array(self.position) + np.array(
                 [np.cos(self.side * np.pi / 180), np.sin(self.side * np.pi / 180)]) * self.data_center.radius
         return side_bool and np.linalg.norm(np.array(self.data_center.position) - np.array(entry)) < (
-                                                                                                     1 + pos_tolerance) * self.prof
+                                                                                                         1 + pos_tolerance) * self.prof
 
 
     def act(self):
@@ -84,8 +85,7 @@ class Distributeur():
             entry = np.array(self.position) + np.array(
                 [np.cos(self.side * np.pi / 180), np.sin(self.side * np.pi / 180)]) * self.data_center.radius
         return side_bool and np.linalg.norm(np.array(self.data_center.position) - np.array(entry)) < (
-                                                                                                     1 + pos_tolerance) * self.prof
-
+                                                                                                         1 + pos_tolerance) * self.prof
 
 
     def act(self):

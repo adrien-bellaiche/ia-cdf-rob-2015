@@ -1,12 +1,14 @@
 # -*- coding: utf8 -*-
 __author__ = 'adrie_000'
 
-from serial import *
 from math import pi, cos, sin
 from time import sleep
 from threading import Thread
 import sys
 import glob
+
+from serial import *
+
 
 LEFT = 0
 RIGHT = 1
@@ -29,6 +31,7 @@ class GeneralSerialCom():
 
     def write(self, message):
         self.com.write(message)
+        self.com.flush()
 
     def read(self):
         return self.com.read()
@@ -81,6 +84,10 @@ class ArduinoCom(GeneralSerialCom, Thread):
             return LEFT
         else:
             return RIGHT
+
+    def request_orientation(self):
+        # TODO
+        pass
 
     def run(self):
         while self.started:
